@@ -37,12 +37,9 @@ public class LoginController {
         return false;
     }
 
-    @RequestMapping(value = "/hola", method = RequestMethod.GET)
-    public String hola(String username, String password) {
-        System.out.println("hola: ");
-
-        return "hola";
-
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public void logout() {
+        System.out.println("logout");
     }
 
 }
