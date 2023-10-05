@@ -13,3 +13,11 @@ INSERT INTO APP_USER VALUES (
     'admin',
     'test2@test.com'
 );
+
+INSERT INTO APP_USER VALUES (
+    10003,
+    'Test3',
+    '1234',
+    'admin',
+    'test3@test.com'
+);
