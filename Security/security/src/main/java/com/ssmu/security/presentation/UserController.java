@@ -18,33 +18,33 @@ public class UserController {
 
     @Autowired
     private GetAllUsers getAllUsers;
-    @Autowired
-    private UserRepository userRepository;
+    // @Autowired
+    // private UserRepository userRepository;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {
         return getAllUsers.call(null);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public AppUser buscar(Long id) {
-        return userRepository.findById(id).get();
-    }
+    // @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    // public AppUser buscar(Long id) {
+    //     return userRepository.findById(id).get();
+    // }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deletar(Long id) {
-        userRepository.deleteById(id);
-    }
+    // @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    // public void deletar(Long id) {
+    //     userRepository.deleteById(id);
+    // }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public void atualizar(Long id, AppUser user) {
-        user.setId(id);
-        userRepository.save(user);
-    }
+    // @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    // public void atualizar(Long id, AppUser user) {
+    //     user.setId(id);
+    //     userRepository.save(user);
+    // }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public void inserir(AppUser user) {
-        userRepository.save(user);
-    }
+    // @RequestMapping(value = "/", method = RequestMethod.POST)
+    // public void inserir(AppUser user) {
+    //     userRepository.save(user);
+    // }
 
 }
