@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ssmu.security.domain.entities.AppUser;
+import com.ssmu.security.domain.use_cases.GetAllUsers;
 import com.ssmu.security.infrastructure.repositories.UserRepository;
 
 @RestController
@@ -16,11 +17,13 @@ import com.ssmu.security.infrastructure.repositories.UserRepository;
 public class UserController {
 
     @Autowired
+    private GetAllUsers getAllUsers;
+    @Autowired
     private UserRepository userRepository;
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {
-        return userRepository.findAll();
+        return getAllUsers.call(null);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -28,7 +31,7 @@ public class UserController {
         return userRepository.findById(id).get();
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE) 
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public void deletar(Long id) {
         userRepository.deleteById(id);
     }
@@ -44,5 +47,4 @@ public class UserController {
         userRepository.save(user);
     }
 
-    
 }
