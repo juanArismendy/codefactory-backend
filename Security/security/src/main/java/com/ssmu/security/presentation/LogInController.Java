@@ -21,8 +21,11 @@ public class UserController {
     // @Autowired
     // private UserRepository userRepository;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public boolean login(String username, String password) {
+    @RequestMapping(value = "/hola", method = RequestMethod.POST)
+    public HttpResponse login(String username, String password) {
+        system.out.println("hola: ");
+        system.out.println("password: " + password);
+        system.out.println("username: " + username);
         List<AppUser> users = getAllUsers.call(null);
         for (AppUser user : users) {
             if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
