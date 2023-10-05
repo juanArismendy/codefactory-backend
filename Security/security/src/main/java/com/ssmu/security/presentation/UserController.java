@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ssmu.security.domain.entities.AppUser;
 import com.ssmu.security.domain.use_cases.GetAllUsers;
-import com.ssmu.security.infrastructure.repositories.UserRepository;
+// import com.ssmu.security.infrastructure.repositories.UserRepository;
 
 @RestController
 @RequestMapping("/users")
