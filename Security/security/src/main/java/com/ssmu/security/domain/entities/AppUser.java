@@ -75,6 +75,12 @@ public class AppUser {
 
     public void setEmail(String email) {
         this.email = email;
+
     }
 
+    @Override
+    public String toString() {
+        return "AppUser [email=" + email + ", id=" + id + ", password=" + password + ", role=" + role + ", username="
+                + username + "]";
+    }
 }
