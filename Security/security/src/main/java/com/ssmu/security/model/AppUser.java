@@ -13,7 +13,7 @@ public class AppUser {
     private Long id;
     private String username;
     private String password;
-    private String role;
+    // private String role;
     // private boolean active;
     private String email;
 
@@ -24,7 +24,7 @@ public class AppUser {
         this.id = id;
         this.username = username;
         this.password = password;
-        this.role = role;
+        
 
         this.email = email;
     }
@@ -45,9 +45,7 @@ public class AppUser {
     // return active;
     // }
 
-    public String getRole() {
-        return role;
-    }
+  
 
     public String getEmail() {
         return email;
@@ -69,9 +67,6 @@ public class AppUser {
     // this.active = active;
     // }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 
     public void setEmail(String email) {
         this.email = email;
@@ -80,7 +75,7 @@ public class AppUser {
 
     @Override
     public String toString() {
-        return "AppUser [email=" + email + ", id=" + id + ", password=" + password + ", role=" + role + ", username="
+        return "AppUser [email=" + email + ", id=" + id + ", password=" + password +  ", username="
                 + username + "]";
     }
 }
