@@ -2,14 +2,18 @@ package com.ssmu.security.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "app_user")
 public class AppUser {
     @Id
-    @GeneratedValue
+    // @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE1")
+    // @SequenceGenerator(name="SEQUENCE1", sequenceName="SEQUENCE1",
+    // allocationSize=1)
     private Long id;
     private String username;
     private String password;
@@ -24,7 +28,6 @@ public class AppUser {
         this.id = id;
         this.username = username;
         this.password = password;
-        
 
         this.email = email;
     }
@@ -44,8 +47,6 @@ public class AppUser {
     // public boolean isActive() {
     // return active;
     // }
-
-  
 
     public String getEmail() {
         return email;
@@ -67,7 +68,6 @@ public class AppUser {
     // this.active = active;
     // }
 
-
     public void setEmail(String email) {
         this.email = email;
 
@@ -75,7 +75,7 @@ public class AppUser {
 
     @Override
     public String toString() {
-        return "AppUser [email=" + email + ", id=" + id + ", password=" + password +  ", username="
+        return "AppUser [email=" + email + ", id=" + id + ", password=" + password + ", username="
                 + username + "]";
     }
 }
