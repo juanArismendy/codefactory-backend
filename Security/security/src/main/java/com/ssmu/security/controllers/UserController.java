@@ -1,4 +1,4 @@
-package com.ssmu.security.presentation;
+package com.ssmu.security.controllers;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -6,13 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ssmu.security.domain.entities.AppUser;
-import com.ssmu.security.domain.use_cases.GetAllUsers;
 import com.ssmu.security.infrastructure.repositories.UserRepository;
 
 @RestController
@@ -20,15 +18,20 @@ import com.ssmu.security.infrastructure.repositories.UserRepository;
 public class UserController {
 
     @Autowired
-    private GetAllUsers getAllUsers;
-    @Autowired
     private UserRepository userRepository;
 
     //TODO agregar validaciones para todos los métodos
 
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test() {
+            System.out.println("Test>>>>");
+        return  "test ok";
+    }
+
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {
-        return getAllUsers.call(null);
+    
+        return userRepository.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

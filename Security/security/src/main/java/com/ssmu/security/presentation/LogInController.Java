@@ -13,33 +13,33 @@ import com.ssmu.security.domain.entities.AppUser;
 import com.ssmu.security.domain.entities.LoginForm;
 import com.ssmu.security.domain.use_cases.GetAllUsers;
 
-@RestController
-@RequestMapping("/login")
-public class LoginController {
+// @RestController
+// @RequestMapping("/login")
+// public class LoginController {
 
-    @Autowired
-    private GetAllUsers getAllUsers;
-    // @Autowired
-    // private UserRepository userRepository;
+//     @Autowired
+//     private GetAllUsers getAllUsers;
+//     // @Autowired
+//     // private UserRepository userRepository;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public boolean login(@RequestBody LoginForm loginForm) {
+//     @RequestMapping(value = "/", method = RequestMethod.POST)
+//     public boolean login(@RequestBody LoginForm loginForm) {
 
-        System.out.println("password: " + loginForm.getPassword());
-        System.out.println("username: " + loginForm.getUsername());
-        List<AppUser> users = getAllUsers.call(null);
-        for (AppUser user : users) {
-            if (user.getUsername().equals(loginForm.getUsername())
-                    && user.getPassword().equals(loginForm.getPassword())) {
-                return true;
-            }
-        }
-        return false;
-    }
+//         System.out.println("password: " + loginForm.getPassword());
+//         System.out.println("username: " + loginForm.getUsername());
+//         List<AppUser> users = getAllUsers.call(null);
+//         for (AppUser user : users) {
+//             if (user.getUsername().equals(loginForm.getUsername())
+//                     && user.getPassword().equals(loginForm.getPassword())) {
+//                 return true;
+//             }
+//         }
+//         return false;
+//     }
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout() {
-        System.out.println("logout");
-    }
+//     @RequestMapping(value = "/logout", method = RequestMethod.GET)
+//     public void logout() {
+//         System.out.println("logout");
+//     }
 
-}
+// }
