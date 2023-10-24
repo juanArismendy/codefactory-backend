@@ -14,44 +14,46 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.ssmu.security.model.AppUser;
 import com.ssmu.security.repositories.UserRepository;
 import com.ssmu.security.services.GetAllUsers;
+import com.ssmu.security.services.UserService;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
     @Autowired
-    private GetAllUsers getAllUsers;
-    @Autowired
     private UserRepository userRepository;
 
-    //TODO agregar validaciones para todos los métodos
+    @Autowired
+    private UserService userService;
+
+    // TODO agregar validaciones para todos los métodos
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {
-        return getAllUsers.call(null);
+        return userService.getAllUsers();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public AppUser buscar(@PathVariable Long id) {
-        return userRepository.findById(id).get();
+        return userService.getUserById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deletar(@PathVariable Long id) {
-        userRepository.deleteById(id);
+    public void borrar(@PathVariable Long id) {
+        userService.deleteUserById(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public void atualizar(@PathVariable Long id, @RequestBody AppUser user) {
         user.setId(id);
-        userRepository.save(user);
+        userService.updateUser(user);
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public AppUser crear(@RequestBody AppUser user) {
         System.out.println("user: " + user.toString());
 
-        return userRepository.save(user);
+        return userService.saveUser(user);
 
     }
 
