@@ -1,4 +1,4 @@
-package com.ssmu.security.domain.entities;
+package com.ssmu.security.model;
 
 public class LoginForm {
     private String username;

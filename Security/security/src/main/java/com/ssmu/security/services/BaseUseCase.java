@@ -1,4 +1,4 @@
-package com.ssmu.security.domain.use_cases;
+package com.ssmu.security.services;
 
  public interface BaseUseCase<I, R> {
   /// Method to be executed by current use case.

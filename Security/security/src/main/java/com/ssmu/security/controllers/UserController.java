@@ -1,4 +1,4 @@
-package com.ssmu.security.presentation;
+package com.ssmu.security.controllers;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,9 +11,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ssmu.security.domain.entities.AppUser;
-import com.ssmu.security.domain.use_cases.GetAllUsers;
-import com.ssmu.security.infrastructure.repositories.UserRepository;
+import com.ssmu.security.model.AppUser;
+import com.ssmu.security.repositories.UserRepository;
+import com.ssmu.security.services.GetAllUsers;
 
 @RestController
 @RequestMapping("/users")
