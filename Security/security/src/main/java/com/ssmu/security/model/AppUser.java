@@ -1,34 +1,68 @@
 package com.ssmu.security.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.Data;
 
+@Data
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "app_user")
 public class AppUser {
     @Id
     // @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE1")
     // @SequenceGenerator(name="SEQUENCE1", sequenceName="SEQUENCE1",
     // allocationSize=1)
+    @Column(name = "id", insertable = true, updatable = true)
     private Long id;
+
+    @Column(name = "username", nullable = false, length = 50, insertable = true, updatable = true)
     private String username;
+
+    @Column(name = "password", nullable = false, length = 100, insertable = true, updatable = true)
     private String password;
-    // private String role;
+   
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
     // private boolean active;
+
+    @Column(name = "email", nullable = true, length = 50, insertable = true, updatable = true)
     private String email;
 
     public AppUser() {
     }
 
-    public AppUser(Long id, String username, String password, String role, boolean active, String email) {
+    public AppUser(Long id, String username, String password, String email) {
         this.id = id;
         this.username = username;
         this.password = password;
 
+
+        this.email = email;
+    }
+
+     public AppUser(int id, String username, String password, String email) {
+        this.id = Long.valueOf(id);
+        this.username = username;
+        this.password = password;
         this.email = email;
     }
 
@@ -73,9 +107,28 @@ public class AppUser {
 
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+
+    }
+
     @Override
     public String toString() {
-        return "AppUser [email=" + email + ", id=" + id + ", password=" + password + ", username="
-                + username + "]";
-    }
+        return "AppUser [id=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles
+                + ", email=" + email + "]";
+    }   
+
+    
+
+    // public String getToken() {
+    // return token;
+    // }
+
+    // public void setToken(String token) {
+    // this.token = token;
+    // }
 }

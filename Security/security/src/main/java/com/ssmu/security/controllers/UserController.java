@@ -21,12 +21,14 @@ import com.ssmu.security.services.UserService;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private UserService userService;
 
     // TODO agregar validaciones para todos los métodos
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test() {
+        return "test ok";
+    }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {

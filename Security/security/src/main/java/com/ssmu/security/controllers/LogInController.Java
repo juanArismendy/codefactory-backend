@@ -1,45 +1,201 @@
-package com.ssmu.security.presentation;
+package com.ssmu.security.controllers;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
-import com.ssmu.security.domain.entities.AppUser;
-import com.ssmu.security.domain.entities.LoginForm;
-import com.ssmu.security.domain.use_cases.GetAllUsers;
+import com.ssmu.security.model.AppUser;
+import com.ssmu.security.model.AuthenticationReq;
+import com.ssmu.security.model.ERole;
+import com.ssmu.security.model.Role;
+import com.ssmu.security.model.SignupRequest;
+import com.ssmu.security.model.response.MessageResponse;
+import com.ssmu.security.repositories.RoleRepository;
+import com.ssmu.security.repositories.UserRepository;
+import com.ssmu.security.services.JwtUtilService;
+
+// import com.ssmu.security.security.jwt.request.JwtRequest;
+// import com.ssmu.security.security.jwt.response.JwtResponse;
+// import com.ssmu.security.security_config.JwtTokenUtil;
 
 @RestController
-@RequestMapping("/login")
+@CrossOrigin
+@RequestMapping
 public class LoginController {
 
-    @Autowired
-    private GetAllUsers getAllUsers;
-    // @Autowired
-    // private UserRepository userRepository;
+	@Autowired
+	private AuthenticationManager authenticationManager;
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public boolean login(@RequestBody LoginForm loginForm) {
+	@Autowired
+	private UserRepository userRepository;
 
-        System.out.println("password: " + loginForm.getPassword());
-        System.out.println("username: " + loginForm.getUsername());
-        List<AppUser> users = getAllUsers.call(null);
-        for (AppUser user : users) {
-            if (user.getUsername().equals(loginForm.getUsername())
-                    && user.getPassword().equals(loginForm.getPassword())) {
-                return true;
-            }
-        }
-        return false;
-    }
+	@Autowired
+	private RoleRepository roleRepository;
 
-    @RequestMapping(value = "/logout", method = RequestMethod.GET)
-    public void logout() {
-        System.out.println("logout");
-    }
+	@Autowired
+	UserDetailsService usuarioDetailsService;
 
+	@Autowired
+	private JwtUtilService jwtUtilService;
+
+	@Autowired
+	PasswordEncoder encoder;
+
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
+	// @RequestMapping(value = "/login", method = RequestMethod.POST)
+	// public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest
+	// authenticationRequest) throws Exception {
+
+	// log.info("BEGIN LOGIN");
+	// log.info("username: " + authenticationRequest.getUsername());
+	// log.info("password: " + authenticationRequest.getPassword());
+	// authenticate(authenticationRequest.getUsername(),
+	// authenticationRequest.getPassword());
+
+	// final UserDetails userDetails = userDetailsService
+	// .loadUserByUsername(authenticationRequest.getUsername());
+
+	// log.info("userDetails: " + userDetails.toString());
+
+	// final String token = jwtTokenUtil.generateToken(userDetails);
+
+	// return ResponseEntity.ok(new JwtResponse(token));
+	// }
+
+	// private void authenticate(String username, String password) throws Exception
+	// {
+	// try {
+	// authenticationManager.authenticate(new
+	// UsernamePasswordAuthenticationToken(username, password));
+	// } catch (DisabledException e) {
+	// throw new Exception("USER_DISABLED", e);
+	// } catch (BadCredentialsException e) {
+	// throw new Exception("INVALID_CREDENTIALS", e);
+	// }
+	// }
+
+	@PostMapping("/login")
+	public ResponseEntity<String> authenticate(@RequestBody AuthenticationReq authenticationReq) {
+		System.out.println("authenticationReq: " + authenticationReq.toString());
+
+		logger.info("Autenticando al usuario {}", authenticationReq.getuserName());
+
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(authenticationReq.getuserName(),
+						authenticationReq.getpassword()));
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		// String jwt = jwtUtils.generateJwtToken(authentication);
+
+		final UserDetails userDetails = usuarioDetailsService.loadUserByUsername(
+				authenticationReq.getuserName());
+
+		System.out.println("userDetails: " + userDetails.toString());
+
+		// final String jwt = jwtUtilService.generateToken(userDetails);
+		final String jwt = jwtUtilService.generateJwtToken(userDetails);
+
+		System.out.println("jwt: " + jwt);
+
+		return ResponseEntity.ok(jwt);
+	}
+
+	@PostMapping("/signup")
+	public ResponseEntity<?> registerUser(@RequestBody SignupRequest signUpRequest) {
+		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Username is already taken!"));
+		}
+
+		if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Email is already in use!"));
+		}
+
+		// Create new user's account
+		AppUser user = new AppUser(
+				signUpRequest.getId(),
+				signUpRequest.getUsername(),
+				encoder.encode(signUpRequest.getPassword()),
+				signUpRequest.getEmail());
+
+		Set<String> strRoles = signUpRequest.getRole();
+		Set<Role> roles = new HashSet<>();
+
+		if (strRoles == null) {
+			Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+			roles.add(userRole);
+		} else {
+			strRoles.forEach(role -> {
+				switch (role) {
+					case "admin":
+						Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
+								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+						roles.add(adminRole);
+
+						break;
+					case "mod":
+						Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
+								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+						roles.add(modRole);
+
+						break;
+					default:
+						Role userRole = roleRepository.findByName(ERole.ROLE_USER)
+								.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+						roles.add(userRole);
+				}
+			});
+		}
+
+		user.setRoles(roles);
+		userRepository.save(user);
+
+		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+	}
+
+	@GetMapping("/mensaje")
+	public ResponseEntity<?> getMensaje() {
+		logger.info("Obteniendo el mensaje");
+
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		logger.info("Datos del Usuario: {}", auth.getPrincipal());
+		logger.info("Datos de los Roles {}", auth.getAuthorities());
+		logger.info("Esta autenticado {}", auth.isAuthenticated());
+
+		Map<String, String> mensaje = new HashMap<>();
+		mensaje.put("contenido", "Hola Peru");
+		return ResponseEntity.ok(mensaje);
+	}
+
+	@GetMapping("/admin")
+	public ResponseEntity<?> getMensajeAdmin() {
+
+		var auth = SecurityContextHolder.getContext().getAuthentication();
+		logger.info("Datos del Usuario: {}", auth.getPrincipal());
+		logger.info("Datos de los Permisos {}", auth.getAuthorities());
+		logger.info("Esta autenticado {}", auth.isAuthenticated());
+
+		Map<String, String> mensaje = new HashMap<>();
+		mensaje.put("contenido", "Hola Admin");
+		return ResponseEntity.ok(mensaje);
+	}
 }
