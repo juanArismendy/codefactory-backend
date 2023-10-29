@@ -34,7 +34,7 @@ import com.ssmu.security.services.JwtUtilService;
 
 @RestController
 @CrossOrigin
-@RequestMapping
+@RequestMapping("/api_v1/auth")
 public class LoginController {
 
 	@Autowired
@@ -107,8 +107,8 @@ public class LoginController {
 
 		System.out.println("userDetails: " + userDetails.toString());
 
-		// final String jwt = jwtUtilService.generateToken(userDetails);
-		final String jwt = jwtUtilService.generateJwtToken(userDetails);
+		final String jwt = jwtUtilService.generateToken(userDetails);
+		// final String jwt = jwtUtilService.generateJwtToken(userDetails);
 
 		System.out.println("jwt: " + jwt);
 
@@ -172,8 +172,22 @@ public class LoginController {
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
 
-	@GetMapping("/mensaje")
-	public ResponseEntity<?> getMensaje() {
+	// @GetMapping("/currentuser")
+	// public ResponseEntity<?> getMensaje() {
+	// logger.info("Obteniendo el mensaje");
+
+	// var auth = SecurityContextHolder.getContext().getAuthentication();
+	// logger.info("Datos del Usuario: {}", auth.getPrincipal());
+	// logger.info("Datos de los Roles {}", auth.getAuthorities());
+	// logger.info("Esta autenticado {}", auth.isAuthenticated());
+
+	// Map<String, String> mensaje = new HashMap<>();
+	// mensaje.put("Hola Usuario", auth.getPrincipal().toString());
+	// return ResponseEntity.ok(mensaje);
+	// }
+
+	@RequestMapping(value = "/currentuser", method = RequestMethod.GET)
+	public ResponseEntity<?> getCurrentUser() {
 		logger.info("Obteniendo el mensaje");
 
 		var auth = SecurityContextHolder.getContext().getAuthentication();
@@ -182,7 +196,7 @@ public class LoginController {
 		logger.info("Esta autenticado {}", auth.isAuthenticated());
 
 		Map<String, String> mensaje = new HashMap<>();
-		mensaje.put("contenido", "Hola Peru");
+		mensaje.put("Hola Usuario", auth.getPrincipal().toString());
 		return ResponseEntity.ok(mensaje);
 	}
 

@@ -1,5 +1,6 @@
 package com.ssmu.security.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +20,16 @@ import com.ssmu.security.services.UserDetailServiceImpl;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    UserDetailServiceImpl userDetailsService() {
-        return new UserDetailServiceImpl();
-    }
+    @Autowired
+    private JwtRequestFilter jwtRequestFilter;;
+
+    // @Autowired
+    // private UserDetailServiceImpl userDetailServiceImpl;
+
+    // @Bean
+    // UserDetailServiceImpl userDetailsService() {
+    // return userDetailServiceImpl;
+    // }
 
     @Bean
     PasswordEncoder passwordEncoder() {
@@ -45,11 +52,19 @@ public class SecurityConfig {
         // .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         // ;
 
-        http.authorizeHttpRequests((authorize) -> authorize
-                // .requestMatchers("/**").permitAll()
-                // .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll())
-                .csrf(AbstractHttpConfigurer::disable);
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests((authorize) -> authorize
+                        // .requestMatchers("/**").permitAll()
+                        .requestMatchers("/api_v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api_v1/auth/**").permitAll()
+                        .requestMatchers("/api_v1/test/**").permitAll()
+                        .anyRequest().authenticated())
+                // .cors(Customizer.withDefaults())
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement((session) -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // .csrf(AbstractHttpConfigurer::disable);
 
         // http.formLogin(Customizer.withDefaults());
 

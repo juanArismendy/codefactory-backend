@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class JwtUtilService {
-    // LLAVE_MUY_SECRETA => [Base64] => TExBVkVfTVVZX1NFQ1JFVEE=
+    // LLAVE_SECRETA => [Base64] => TExBVkVfTVVZX1NFQ1JFVEE=
     private static final String JWT_SECRET_KEY = "TExBVkVfTVVZX1NFQ1JFVEE=";
 
     public static final long JWT_TOKEN_VALIDITY = 1000 * 60 * 60 * (long) 8; // 8 Horas
@@ -38,27 +38,26 @@ public class JwtUtilService {
         return extractExpiration(token).before(new Date());
     }
 
-    // public String generateToken(UserDetails userDetails) {
-    // Map<String, Object> claims = new HashMap<>();
-    // // Agregando informacion adicional como "claim"
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        // Agregando informacion adicional como "claim"
 
-    // var rol =
-    // userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0);
-    // System.out.println("rol>>>>: " + rol);
-    // claims.put("rol", rol);
-    // return createToken(claims, userDetails.getUsername());
-    // }
-
-    public String generateJwtToken(UserDetails userDetails) {
-
-        return Jwts
-                .builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-                .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-                .compact();
+        var rol = userDetails.getAuthorities().stream().collect(Collectors.toList()).get(0);
+        System.out.println("rol>>>>: " + rol);
+        claims.put("rol", rol);
+        return createToken(claims, userDetails.getUsername());
     }
+
+    // public String generateJwtToken(UserDetails userDetails) {
+
+    // return Jwts
+    // .builder()
+    // .setSubject(userDetails.getUsername())
+    // .setIssuedAt(new Date(System.currentTimeMillis()))
+    // .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
+    // .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
+    // .compact();
+    // }
 
     private String createToken(Map<String, Object> claims, String subject) {
 

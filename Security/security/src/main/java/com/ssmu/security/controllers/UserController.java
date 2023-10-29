@@ -17,21 +17,15 @@ import com.ssmu.security.services.GetAllUsers;
 import com.ssmu.security.services.UserService;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api_v1/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    // TODO agregar validaciones para todos los métodos
-
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test() {
-        return "test ok";
-    }
-
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public List<AppUser> listar() {
+        System.out.println("listar todos>>>");
         return userService.getAllUsers();
     }
 

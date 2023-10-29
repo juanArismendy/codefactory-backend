@@ -37,10 +37,9 @@ public class AppUser {
 
     @Column(name = "password", nullable = false, length = 100, insertable = true, updatable = true)
     private String password;
-   
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "role_id"))
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     // private boolean active;
 
@@ -55,11 +54,10 @@ public class AppUser {
         this.username = username;
         this.password = password;
 
-
         this.email = email;
     }
 
-     public AppUser(int id, String username, String password, String email) {
+    public AppUser(int id, String username, String password, String email) {
         this.id = Long.valueOf(id);
         this.username = username;
         this.password = password;
@@ -78,10 +76,6 @@ public class AppUser {
         return password;
     }
 
-    // public boolean isActive() {
-    // return active;
-    // }
-
     public String getEmail() {
         return email;
     }
@@ -97,10 +91,6 @@ public class AppUser {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    // public void setActive(boolean active) {
-    // this.active = active;
-    // }
 
     public void setEmail(String email) {
         this.email = email;
@@ -120,15 +110,6 @@ public class AppUser {
     public String toString() {
         return "AppUser [id=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles
                 + ", email=" + email + "]";
-    }   
+    }
 
-    
-
-    // public String getToken() {
-    // return token;
-    // }
-
-    // public void setToken(String token) {
-    // this.token = token;
-    // }
 }
