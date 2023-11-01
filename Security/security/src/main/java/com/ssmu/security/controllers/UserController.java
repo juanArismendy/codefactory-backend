@@ -6,14 +6,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpResponse;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ssmu.security.model.AppUser;
-import com.ssmu.security.repositories.UserRepository;
-import com.ssmu.security.services.GetAllUsers;
 import com.ssmu.security.services.UserService;
 
 @RestController

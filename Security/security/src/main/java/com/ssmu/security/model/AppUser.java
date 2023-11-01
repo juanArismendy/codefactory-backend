@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -23,13 +24,16 @@ import lombok.Data;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "app_user")
+@Table(name = "app_user", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")
+})
 public class AppUser {
+
     @Id
-    // @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SEQUENCE1")
-    // @SequenceGenerator(name="SEQUENCE1", sequenceName="SEQUENCE1",
-    // allocationSize=1)
-    @Column(name = "id", insertable = true, updatable = true)
+    @Column(name = "id", nullable = false)
+    @SequenceGenerator(name = "user_seq", sequenceName = "APP_USER_SEQ", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     private Long id;
 
     @Column(name = "username", nullable = false, length = 50, insertable = true, updatable = true)
@@ -47,6 +51,12 @@ public class AppUser {
     private String email;
 
     public AppUser() {
+    }
+
+    public AppUser(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
     }
 
     public AppUser(Long id, String username, String password, String email) {

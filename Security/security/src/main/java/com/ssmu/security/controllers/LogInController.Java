@@ -131,12 +131,14 @@ public class LoginController {
 
 		// Create new user's account
 		AppUser user = new AppUser(
-				signUpRequest.getId(),
+				// signUpRequest.getId(),
 				signUpRequest.getUsername(),
 				encoder.encode(signUpRequest.getPassword()),
 				signUpRequest.getEmail());
 
-		Set<String> strRoles = signUpRequest.getRole();
+				System.out.println("user: " + user.toString());
+
+		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();
 
 		if (strRoles == null) {
@@ -145,6 +147,7 @@ public class LoginController {
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
+				System.out.println("role: " + role);
 				switch (role) {
 					case "admin":
 						Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
@@ -171,20 +174,6 @@ public class LoginController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
 	}
-
-	// @GetMapping("/currentuser")
-	// public ResponseEntity<?> getMensaje() {
-	// logger.info("Obteniendo el mensaje");
-
-	// var auth = SecurityContextHolder.getContext().getAuthentication();
-	// logger.info("Datos del Usuario: {}", auth.getPrincipal());
-	// logger.info("Datos de los Roles {}", auth.getAuthorities());
-	// logger.info("Esta autenticado {}", auth.isAuthenticated());
-
-	// Map<String, String> mensaje = new HashMap<>();
-	// mensaje.put("Hola Usuario", auth.getPrincipal().toString());
-	// return ResponseEntity.ok(mensaje);
-	// }
 
 	@RequestMapping(value = "/currentuser", method = RequestMethod.GET)
 	public ResponseEntity<?> getCurrentUser() {

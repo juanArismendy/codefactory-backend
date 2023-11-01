@@ -4,13 +4,13 @@ import java.util.Set;
 
 public class SignupRequest {
 
-    private int id;
+    // private int id;
 
     private String username;
 
     private String email;
 
-    private Set<String> role;
+    private Set<String> roles;
 
     private String password;
 
@@ -38,20 +38,20 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRole() {
-        return this.role;
+    public Set<String> getRoles() {
+        return this.roles;
     }
 
     public void setRole(Set<String> role) {
-        this.role = role;
+        this.roles = role;
     }
 
-    public int getId() {
-        return id;
-    }
+    // public int getId() {
+    //     return id;
+    // }
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    // public void setId(int id) {
+    //     this.id = id;
+    // }
 
 }
