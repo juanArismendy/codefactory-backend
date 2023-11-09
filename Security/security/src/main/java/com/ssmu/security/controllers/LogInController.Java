@@ -35,7 +35,7 @@ import com.ssmu.security.services.JwtUtilService;
 @RestController
 @CrossOrigin
 @RequestMapping("/api_v1/auth")
-public class LoginController {
+public class LoginController  {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -57,37 +57,6 @@ public class LoginController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-	// @RequestMapping(value = "/login", method = RequestMethod.POST)
-	// public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest
-	// authenticationRequest) throws Exception {
-
-	// log.info("BEGIN LOGIN");
-	// log.info("username: " + authenticationRequest.getUsername());
-	// log.info("password: " + authenticationRequest.getPassword());
-	// authenticate(authenticationRequest.getUsername(),
-	// authenticationRequest.getPassword());
-
-	// final UserDetails userDetails = userDetailsService
-	// .loadUserByUsername(authenticationRequest.getUsername());
-
-	// log.info("userDetails: " + userDetails.toString());
-
-	// final String token = jwtTokenUtil.generateToken(userDetails);
-
-	// return ResponseEntity.ok(new JwtResponse(token));
-	// }
-
-	// private void authenticate(String username, String password) throws Exception
-	// {
-	// try {
-	// authenticationManager.authenticate(new
-	// UsernamePasswordAuthenticationToken(username, password));
-	// } catch (DisabledException e) {
-	// throw new Exception("USER_DISABLED", e);
-	// } catch (BadCredentialsException e) {
-	// throw new Exception("INVALID_CREDENTIALS", e);
-	// }
-	// }
 
 	@PostMapping("/login")
 	public ResponseEntity<String> authenticate(@RequestBody AuthenticationReq authenticationReq) {

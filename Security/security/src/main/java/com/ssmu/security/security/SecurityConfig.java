@@ -34,8 +34,10 @@ public class SecurityConfig {
                         .requestMatchers("/api_v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api_v1/auth/**").permitAll()
                         .requestMatchers("/api_v1/test/**").permitAll()
-                        .requestMatchers("/api_v1/users/**").hasRole("ADMIN")
-                        .anyRequest().authenticated())
+                        .requestMatchers("/v2/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        // .requestMatchers("/api_v1/users/**").hasRole("ADMIN")
+                        .anyRequest().permitAll())
                 // .cors(Customizer.withDefaults())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session

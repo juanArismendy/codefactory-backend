@@ -9,6 +9,6 @@ import com.ssmu.security.model.ERole;
 import com.ssmu.security.model.Role;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
   Optional<Role> findByName(ERole name);
 }
