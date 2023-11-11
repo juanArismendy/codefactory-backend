@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 
 import com.ssmu.security.model.AppUser;
 import com.ssmu.security.services.UserService;
@@ -20,7 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("api_v1/users")
-@SecurityRequirement(name = "bearerAuth")
+// @SecurityRequirement(name = "bearerAuth")
 @Tag(name = "User", description = "The User API. Contains all the operations that can be performed on a user.")
 public class UserController {
 
@@ -28,11 +29,20 @@ public class UserController {
     private UserService userService;
 
     @Operation(summary = "Get all users", description = "Get all usersr")
-    @SecurityRequirement(name = "Bearer Authentication")
+    // @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping(value = "/all")
-    public List<AppUser> listar() {
+    public ResponseEntity<List<AppUser>> listar() {
         System.out.println("listar todos>>>");
-        return userService.getAllUsers();
+
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return null;
+        }
+
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

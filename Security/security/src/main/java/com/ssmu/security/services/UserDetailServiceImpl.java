@@ -14,6 +14,7 @@ import com.ssmu.security.repositories.UserRepository;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
+    
     @Autowired
     private UserRepository userRepository;
 

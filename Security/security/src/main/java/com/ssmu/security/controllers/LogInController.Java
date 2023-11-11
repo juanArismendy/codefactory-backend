@@ -2,8 +2,10 @@ package com.ssmu.security.controllers;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +25,13 @@ import com.ssmu.security.model.AuthenticationReq;
 import com.ssmu.security.model.ERole;
 import com.ssmu.security.model.Role;
 import com.ssmu.security.model.SignupRequest;
+import com.ssmu.security.model.response.JwtResponse;
 import com.ssmu.security.model.response.MessageResponse;
 import com.ssmu.security.repositories.RoleRepository;
 import com.ssmu.security.repositories.UserRepository;
 import com.ssmu.security.services.JwtUtilService;
+
+import jakarta.validation.Valid;
 
 // import com.ssmu.security.security.jwt.request.JwtRequest;
 // import com.ssmu.security.security.jwt.response.JwtResponse;
@@ -35,7 +40,7 @@ import com.ssmu.security.services.JwtUtilService;
 @RestController
 @CrossOrigin
 @RequestMapping("/api_v1/auth")
-public class LoginController  {
+public class LoginController {
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -57,9 +62,8 @@ public class LoginController  {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-
 	@PostMapping("/login")
-	public ResponseEntity<String> authenticate(@RequestBody AuthenticationReq authenticationReq) {
+	public ResponseEntity<?> authenticate(@RequestBody AuthenticationReq authenticationReq) {
 		System.out.println("authenticationReq: " + authenticationReq.toString());
 
 		logger.info("Autenticando al usuario {}", authenticationReq.getuserName());
@@ -69,19 +73,24 @@ public class LoginController  {
 						authenticationReq.getpassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		// String jwt = jwtUtils.generateJwtToken(authentication);
+	
 
 		final UserDetails userDetails = usuarioDetailsService.loadUserByUsername(
 				authenticationReq.getuserName());
 
+		List<String> roles = userDetails.getAuthorities().stream()
+				.map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+
 		System.out.println("userDetails: " + userDetails.toString());
 
 		final String jwt = jwtUtilService.generateToken(userDetails);
-		// final String jwt = jwtUtilService.generateJwtToken(userDetails);
-
+		
 		System.out.println("jwt: " + jwt);
 
-		return ResponseEntity.ok(jwt);
+		return ResponseEntity.ok(new JwtResponse(jwt,
+				userDetails.getUsername(),
+				roles));
 	}
 
 	@PostMapping("/signup")
@@ -105,7 +114,7 @@ public class LoginController  {
 				encoder.encode(signUpRequest.getPassword()),
 				signUpRequest.getEmail());
 
-				System.out.println("user: " + user.toString());
+		System.out.println("user: " + user.toString());
 
 		Set<String> strRoles = signUpRequest.getRoles();
 		Set<Role> roles = new HashSet<>();

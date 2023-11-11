@@ -1,13 +1,16 @@
 package com.ssmu.security.services;
 
 import io.jsonwebtoken.Claims;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -48,16 +51,7 @@ public class JwtUtilService {
         return createToken(claims, userDetails.getUsername());
     }
 
-    // public String generateJwtToken(UserDetails userDetails) {
 
-    // return Jwts
-    // .builder()
-    // .setSubject(userDetails.getUsername())
-    // .setIssuedAt(new Date(System.currentTimeMillis()))
-    // .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY))
-    // .signWith(SignatureAlgorithm.HS256, JWT_SECRET_KEY)
-    // .compact();
-    // }
 
     private String createToken(Map<String, Object> claims, String subject) {
 
@@ -75,4 +69,6 @@ public class JwtUtilService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
+
+    
 }
