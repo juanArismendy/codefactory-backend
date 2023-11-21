@@ -16,7 +16,6 @@ import com.ssmu.security.model.AppUser;
 import com.ssmu.security.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -61,12 +60,12 @@ public class UserController {
         userService.updateUser(user);
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public AppUser crear(@RequestBody AppUser user) {
-        System.out.println("user: " + user.toString());
+    // @RequestMapping(value = "/add", method = RequestMethod.POST)
+    // public AppUser crear(@RequestBody AppUser user) {
+    // System.out.println("user: " + user.toString());
 
-        return userService.saveUser(user);
+    // return userService.saveUser(user);
 
-    }
+    // }
 
 }

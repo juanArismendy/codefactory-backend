@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.ssmu.security.model.AppUser;
 import com.ssmu.security.model.AuthenticationReq;
+import com.ssmu.security.model.ChangePassReq;
 import com.ssmu.security.model.ERole;
 import com.ssmu.security.model.Role;
 import com.ssmu.security.model.SignupRequest;
@@ -30,12 +31,7 @@ import com.ssmu.security.model.response.MessageResponse;
 import com.ssmu.security.repositories.RoleRepository;
 import com.ssmu.security.repositories.UserRepository;
 import com.ssmu.security.services.JwtUtilService;
-
-import jakarta.validation.Valid;
-
-// import com.ssmu.security.security.jwt.request.JwtRequest;
-// import com.ssmu.security.security.jwt.response.JwtResponse;
-// import com.ssmu.security.security_config.JwtTokenUtil;
+import com.ssmu.security.services.UserService;
 
 @RestController
 @CrossOrigin
@@ -60,6 +56,9 @@ public class LoginController {
 	@Autowired
 	PasswordEncoder encoder;
 
+	@Autowired
+	private UserService userService;
+
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
 	@PostMapping("/login")
@@ -73,7 +72,6 @@ public class LoginController {
 						authenticationReq.getpassword()));
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-	
 
 		final UserDetails userDetails = usuarioDetailsService.loadUserByUsername(
 				authenticationReq.getuserName());
@@ -85,12 +83,37 @@ public class LoginController {
 		System.out.println("userDetails: " + userDetails.toString());
 
 		final String jwt = jwtUtilService.generateToken(userDetails);
-		
+
 		System.out.println("jwt: " + jwt);
 
 		return ResponseEntity.ok(new JwtResponse(jwt,
 				userDetails.getUsername(),
 				roles));
+	}
+
+	@PostMapping("/changePassword")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePassReq changePassReq) {
+		System.out.println("changePassReq: " + changePassReq.toString());
+
+		logger.info("Autenticando al usuario {}", changePassReq.getEmail());
+
+		String secretKey = changePassReq.getSecretKey();
+
+		if (secretKey == null || secretKey.isEmpty() || secretKey != "@@123") {
+			return ResponseEntity
+					.badRequest()
+					.body(new MessageResponse("Error: Secret Key is empty or does not match!"));
+		}
+
+		String userEmail = changePassReq.getEmail();
+
+		AppUser user = userService.getUserByEmail(userEmail);
+
+		user.setPassword(encoder.encode(changePassReq.getNewPassword()));
+
+		userService.saveUser(user);
+
+		return ResponseEntity.ok(new MessageResponse("Password changed successfully!"));
 	}
 
 	@PostMapping("/signup")
